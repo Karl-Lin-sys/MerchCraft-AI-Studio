@@ -1,3 +1,4 @@
+import { localApiOnly } from './local-api-guard.mjs';
 import express, { Request, Response } from "express";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
@@ -10,6 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use('/api', localApiOnly(() => PORT));
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 // Middleware for parsing json with generous limit for image payloads
@@ -340,7 +342,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  app.listen(PORT, "127.0.0.1", () => {
     console.log(`MerchCraft AI Studio server running on http://0.0.0.0:${PORT}`);
   });
 }
